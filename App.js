@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { StyleSheet, View } from "react-native";
+import { View, KeyboardAvoidingView } from "react-native";
 import styles from "./styles";
-
 import TimerList from "./components/TimerList";
 import ActiveTimer from "./components/ActiveTimer";
 
@@ -47,45 +46,23 @@ const App = () => {
     setActiveSetting(setting);
   };
 
-  const handlePauseTimer = () => {
-    // Check if there's an active timer
-    if (activeSetting) {
-      // Pass necessary information to ActiveTimer component to pause
-      setActiveSetting((prevSetting) => ({
-        ...prevSetting,
-        isRunning: false, // Update isRunning state
-      }));
-    } else {
-      // Handle scenario where there's no active timer to pause
-      console.warn("No active timer to pause");
-    }
-  };
-
-  const handleResumeTimer = () => {
-    // Resume logic for active timer
-  };
-
-  const handleRestartTimer = () => {
-    // Restart logic for active timer
-  };
-
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={{
+        backgroundColor: "#ccc",
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       <TimerList
         settings={settings}
         setSettings={setSettings}
         onDelete={handleDeleteSetting}
         onStart={handleStartSetting}
       />
-      {activeSetting && (
-        <ActiveTimer
-          setting={activeSetting}
-          onPause={handlePauseTimer}
-          onResume={handleResumeTimer}
-          onRestart={handleRestartTimer}
-        />
-      )}
-    </View>
+      {activeSetting && <ActiveTimer setting={activeSetting} />}
+    </KeyboardAvoidingView>
   );
 };
 

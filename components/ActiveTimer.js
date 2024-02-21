@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Audio } from "expo-av";
 import styles from "../styles";
-import { View, Text, Button, Animated } from "react-native";
+import { View, Text, Button, Animated, Pressable } from "react-native";
 
 const ActiveTimer = ({ setting }) => {
   const [remainingIntervals, setRemainingIntervals] = useState(
@@ -9,17 +9,27 @@ const ActiveTimer = ({ setting }) => {
   );
   const [isRunning, setIsRunning] = useState(false);
   const [intervalId, setIntervalId] = useState(null);
+  const [startTime, setStartTime] = useState(0);
+  const [elapsedTime, setElapsedTime] = useState(0);
   const intervalAnimation = useRef(new Animated.Value(0)).current;
   const bellSound = useRef();
+  const gongSound = useRef();
 
   useEffect(() => {
-    const loadSound = async () => {
+    const loadBellSound = async () => {
       const { sound } = await Audio.Sound.createAsync(
         require("../assets/bell.mp3")
       );
       bellSound.current = sound;
     };
-    loadSound();
+    const loadGongSound = async () => {
+      const { sound } = await Audio.Sound.createAsync(
+        require("../assets/gong.mp3")
+      );
+      gongSound.current = sound;
+    };
+    loadBellSound();
+    loadGongSound();
 
     return () => {
       if (bellSound.current) {
@@ -28,9 +38,46 @@ const ActiveTimer = ({ setting }) => {
     };
   }, []);
 
+  // Timer indicator starts
+
+  useEffect(() => {
+    let intervalId;
+    if (startTime) {
+      intervalId = setInterval(() => {
+        const currentTime = new Date().getTime();
+        const elapsedTime = currentTime - startTime;
+        setElapsedTime(elapsedTime);
+      }, 1000); // Update every second
+    }
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [startTime]);
+
+  const startTimer = () => {
+    setStartTime(new Date().getTime());
+  };
+
+  const stopTimer = () => {
+    setStartTime(null);
+    setElapsedTime(0);
+  };
+
+  const formatTime = (time) => {
+    const seconds = Math.floor((time / 1000) % 60);
+    const minutes = Math.floor((time / (1000 * 60)) % 60);
+    const hours = Math.floor((time / (1000 * 60 * 60)) % 24);
+
+    return `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  };
+  // Timer indicator ends
+
   const handleStart = () => {
-    console.log("handleStart started");
     setIsRunning(true);
+    startTimer();
     let countInterval = setting.numberIntervals;
     const interval = setInterval(() => {
       if (countInterval > 1) {
@@ -42,6 +89,7 @@ const ActiveTimer = ({ setting }) => {
         clearInterval(interval);
         setIntervalId(null);
         setIsRunning(false);
+        stopTimer();
         intervalAnimation.setValue(0);
       }
     }, setting.intervalLength * 1000); // Convert to milliseconds
@@ -53,12 +101,16 @@ const ActiveTimer = ({ setting }) => {
     if (isRunning) {
       clearInterval(intervalId);
       setIsRunning(false);
+      stopTimer();
+      intervalAnimation.setValue(0);
     }
   };
 
   const playSound = async (soundName) => {
     if (soundName === "bell" && bellSound.current) {
       await bellSound.current.replayAsync();
+    } else if (soundName === "gong" && gongSound.current) {
+      await gongSound.current.replayAsync();
     }
   };
 
@@ -76,8 +128,12 @@ const ActiveTimer = ({ setting }) => {
   };
 
   return (
-    <View>
-      <Text>Active Timer</Text>
+    <View style={styles.activeContainer}>
+      <Text style={styles.subHead}>Active Timer</Text>
+      <Text style={styles.settingName}>
+        {setting.name}: {setting.numberIntervals} x {setting.intervalLength}{" "}
+        seconds
+      </Text>
       <View id="progressBar" style={styles.progressBar}>
         <View style={styles.intervalScale}>
           {Array.from({ length: setting.numberIntervals }).map((_, index) => (
@@ -98,10 +154,27 @@ const ActiveTimer = ({ setting }) => {
           />
         </View>
       </View>
+
+      <View>
+        <Text style={styles.timerText}>{formatTime(elapsedTime)}</Text>
+      </View>
+
       {isRunning ? (
-        <Button onPress={handleStop} title="Stop" />
+        <Pressable
+          onPress={handleStop}
+          title="Stop"
+          style={styles.actionButton}
+        >
+          <Text style={styles.buttonText}>Stop</Text>
+        </Pressable>
       ) : (
-        <Button onPress={handleStart} title="Start" />
+        <Pressable
+          onPress={handleStart}
+          title="Start"
+          style={styles.actionButton}
+        >
+          <Text style={styles.buttonText}>Start</Text>
+        </Pressable>
       )}
     </View>
   );

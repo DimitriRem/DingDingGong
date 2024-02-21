@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styles from "../styles";
-import { View, Text, TextInput, Button, FlatList } from "react-native";
+import { View, Text, TextInput, FlatList, Pressable } from "react-native";
 
 const TimerList = ({ settings, setSettings, onDelete, onStart }) => {
   const [isAddingNewSetting, setIsAddingNewSetting] = useState(false);
@@ -40,63 +40,117 @@ const TimerList = ({ settings, setSettings, onDelete, onStart }) => {
   };
 
   return (
-    <View>
-      <h2>Saved Timer Settings</h2>
+    <View style={styles.timersContainer}>
+      <Text style={styles.subHead}>Saved Timers</Text>
       <FlatList
+        style={styles.flatList}
         data={settings}
         renderItem={({ item }) => (
           <View style={styles.listItem}>
-            <Text>
-              {item.name}: {item.numberIntervals} intervals x{" "}
-              {item.intervalLength}
-            </Text>
-            <Button title="Start" onPress={() => onStart(item)} />
-            <Button title="Delete" onPress={() => onDelete(item.id)} />
+            <View style={styles.listText}>
+              <Text style={styles.settingName}>{item.name} </Text>
+              <Text>
+                {item.numberIntervals} x {item.intervalLength} seconds
+              </Text>
+            </View>
+            <Pressable
+              style={styles.actionButton}
+              title="Start"
+              onPress={() => onStart(item)}
+            >
+              <Text style={styles.buttonText}>Start</Text>
+            </Pressable>
+            <Pressable
+              style={styles.cancelButton}
+              title="Delete"
+              onPress={() => onDelete(item.id)}
+            >
+              <Text style={styles.buttonText}>Delete</Text>
+            </Pressable>
           </View>
         )}
       />
       {isAddingNewSetting && (
         <View>
           <View style={styles.createTimer}>
-            <Text>
-              <h3>Create Timer:</h3>
-            </Text>
-            <Text>Name:</Text>
-            <TextInput
-              style={styles.textInput}
-              value={newName}
-              onChangeText={setNewName}
-              placeholder="Name"
-            />
-            <Text>Number of intervals:</Text>
-            <TextInput
-              style={styles.textInput}
-              value={newNumberIntervals}
-              onChangeText={setNewNumberIntervals}
-              inputMode="numeric"
-              placeholder="Number of intervals"
-            />
-            <Text>Interval Duration:</Text>
-            <TextInput
-              style={styles.textInput}
-              inputMode="numeric"
-              value={newIntervalLengthMins}
-              onChangeText={setNewIntervalLengthMins}
-              placeholder="minutes"
-            />
-            <TextInput
-              style={styles.textInput}
-              inputMode="numeric"
-              value={newIntervalLengthSecs}
-              onChangeText={setNewIntervalLengthSecs}
-              placeholder="seconds"
-            />
-            <Button title="Save" onPress={handleSaveNewSetting} />
-            <Button title="Cancel" onPress={handleCancelNewSetting} />
+            <Text style={styles.subHead}>Create Timer</Text>
+
+            <View style={styles.fieldRow}>
+              <View style={styles.fieldRowLeft}>
+                <Text>Name: </Text>
+              </View>
+              <View style={styles.fieldRowRight}>
+                <TextInput
+                  style={styles.textInput}
+                  value={newName}
+                  onChangeText={setNewName}
+                  placeholder="Name"
+                />
+              </View>
+            </View>
+            <View style={styles.fieldRow}>
+              <View style={styles.fieldRowLeft}>
+                <Text>Number of intervals: </Text>
+              </View>
+              <View style={styles.fieldRowRight}>
+                <TextInput
+                  style={styles.textInput}
+                  value={newNumberIntervals}
+                  onChangeText={setNewNumberIntervals}
+                  inputMode="numeric"
+                  placeholder="Number of intervals"
+                />
+              </View>
+            </View>
+            <View style={styles.fieldRow}>
+              <View style={styles.fieldRowLeft}>
+                <Text>Interval Duration: </Text>
+              </View>
+              <View style={styles.fieldRowRight}>
+                <TextInput
+                  style={styles.textInput}
+                  inputMode="numeric"
+                  value={newIntervalLengthMins}
+                  onChangeText={setNewIntervalLengthMins}
+                  placeholder="minutes"
+                />
+                <Text>mins </Text>
+                <TextInput
+                  style={styles.textInput}
+                  inputMode="numeric"
+                  value={newIntervalLengthSecs}
+                  onChangeText={setNewIntervalLengthSecs}
+                  placeholder="seconds"
+                />
+                <Text>secs </Text>
+              </View>
+            </View>
+            <View style={styles.fieldRow}>
+              <Pressable
+                style={styles.actionButton}
+                title="Save"
+                onPress={handleSaveNewSetting}
+              >
+                <Text style={styles.buttonText}>Save</Text>
+              </Pressable>
+              <Pressable
+                title="Cancel"
+                style={styles.cancelButton}
+                onPress={handleCancelNewSetting}
+              >
+                <Text style={styles.buttonText}>Cancel</Text>
+              </Pressable>
+            </View>
           </View>
         </View>
       )}
-      <Button title="Add New" onPress={handleAddNewSetting} />
+      <Pressable
+        title="Add New"
+        style={styles.actionButton}
+        onPress={handleAddNewSetting}
+      >
+        <Text style={styles.buttonText}>Add New</Text>
+      </Pressable>
     </View>
   );
 };
