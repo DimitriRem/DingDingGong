@@ -1,16 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../styles";
 import { View, Text, TextInput, Button, FlatList } from "react-native";
 
 const TimerList = ({ settings, setSettings, onDelete, onStart }) => {
   const [isAddingNewSetting, setIsAddingNewSetting] = useState(false);
   const [newNumberIntervals, setNewNumberIntervals] = useState(1);
-  const [newIntervalLength, setNewIntervalLength] = useState(30); // In seconds
+  const [newIntervalLengthMins, setNewIntervalLengthMins] = useState(0);
+  const [newIntervalLengthSecs, setNewIntervalLengthSecs] = useState(0);
+  const [newIntervalLength, setNewIntervalLength] = useState(0); // In seconds
   const [newName, setNewName] = useState("");
 
   const handleAddNewSetting = () => {
     setIsAddingNewSetting(true);
   };
+
+  useEffect(() => {
+    const totalInSecs =
+      parseInt(newIntervalLengthMins) * 60 + parseInt(newIntervalLengthSecs);
+    setNewIntervalLength(totalInSecs);
+  }, [newIntervalLengthMins, newIntervalLengthSecs]);
 
   const handleSaveNewSetting = () => {
     // Validation and creation of new setting object
@@ -68,13 +76,20 @@ const TimerList = ({ settings, setSettings, onDelete, onStart }) => {
               inputMode="numeric"
               placeholder="Number of intervals"
             />
-            <Text>Interval Duration (minutes):</Text>
+            <Text>Interval Duration:</Text>
             <TextInput
               style={styles.textInput}
               inputMode="numeric"
-              value={newIntervalLength}
-              onChangeText={setNewIntervalLength}
-              placeholder="Duration (minutes)"
+              value={newIntervalLengthMins}
+              onChangeText={setNewIntervalLengthMins}
+              placeholder="minutes"
+            />
+            <TextInput
+              style={styles.textInput}
+              inputMode="numeric"
+              value={newIntervalLengthSecs}
+              onChangeText={setNewIntervalLengthSecs}
+              placeholder="seconds"
             />
             <Button title="Save" onPress={handleSaveNewSetting} />
             <Button title="Cancel" onPress={handleCancelNewSetting} />

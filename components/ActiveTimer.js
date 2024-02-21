@@ -1,18 +1,35 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Audio } from "expo-av";
 import styles from "../styles";
-import ProgressBar from "./ProgressBar";
-import Controls from "./Controls";
-import { View, Text, Button } from "react-native";
+import { View, Text, Button, Animated } from "react-native";
 
-const ActiveTimer = ({ setting, onPause, onResume, onRestart }) => {
+const ActiveTimer = ({ setting }) => {
   const [remainingIntervals, setRemainingIntervals] = useState(
     setting.numberIntervals
   );
   const [isRunning, setIsRunning] = useState(false);
   const [intervalId, setIntervalId] = useState(null);
+  const intervalAnimation = useRef(new Animated.Value(0)).current;
+  const bellSound = useRef();
+
+  useEffect(() => {
+    const loadSound = async () => {
+      const { sound } = await Audio.Sound.createAsync(
+        require("../assets/bell.mp3")
+      );
+      bellSound.current = sound;
+    };
+    loadSound();
+
+    return () => {
+      if (bellSound.current) {
+        bellSound.current.unloadAsync();
+      }
+    };
+  }, []);
 
   const handleStart = () => {
+    console.log("handleStart started");
     setIsRunning(true);
     let countInterval = setting.numberIntervals;
     const interval = setInterval(() => {
@@ -25,9 +42,11 @@ const ActiveTimer = ({ setting, onPause, onResume, onRestart }) => {
         clearInterval(interval);
         setIntervalId(null);
         setIsRunning(false);
+        intervalAnimation.setValue(0);
       }
     }, setting.intervalLength * 1000); // Convert to milliseconds
     setIntervalId(interval);
+    progressAnimation();
   };
 
   const handleStop = () => {
@@ -37,26 +56,48 @@ const ActiveTimer = ({ setting, onPause, onResume, onRestart }) => {
     }
   };
 
-  useEffect(() => {
-    return () => clearInterval(intervalId); // Cleanup on unmount
-  }, [intervalId]);
-
   const playSound = async (soundName) => {
-    const { sound } = await Audio.Sound.createAsync({
-      uri: `../assets/${soundName}.mp3`,
-    });
-    await sound.playAsync();
+    if (soundName === "bell" && bellSound.current) {
+      await bellSound.current.replayAsync();
+    }
+  };
+
+  const linearEasing = (progress) => {
+    return progress;
+  };
+
+  const progressAnimation = () => {
+    Animated.timing(intervalAnimation, {
+      toValue: 100,
+      duration: setting.intervalLength * 1000 * setting.numberIntervals,
+      easing: linearEasing,
+      useNativeDriver: true,
+    }).start();
   };
 
   return (
     <View>
       <Text>Active Timer</Text>
-      <ProgressBar
-        isRunning={isRunning}
-        totalIntervals={setting.numberIntervals}
-        intervalLength={setting.intervalLength}
-        remainingIntervals={remainingIntervals}
-      />
+      <View id="progressBar" style={styles.progressBar}>
+        <View style={styles.intervalScale}>
+          {Array.from({ length: setting.numberIntervals }).map((_, index) => (
+            <View key={index} style={styles.intervalScaleItem}></View>
+          ))}
+        </View>
+        <View style={styles.intervalBG}>
+          <Animated.View
+            style={[
+              styles.interval,
+              {
+                width: intervalAnimation.interpolate({
+                  inputRange: [0, 100],
+                  outputRange: ["0%", "100%"],
+                }),
+              },
+            ]}
+          />
+        </View>
+      </View>
       {isRunning ? (
         <Button onPress={handleStop} title="Stop" />
       ) : (
