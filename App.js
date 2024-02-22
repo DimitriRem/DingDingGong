@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { View, KeyboardAvoidingView } from "react-native";
-import styles from "./styles";
+import { KeyboardAvoidingView } from "react-native";
 import TimerList from "./components/TimerList";
 import ActiveTimer from "./components/ActiveTimer";
 

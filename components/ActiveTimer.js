@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Audio } from "expo-av";
 import styles from "../styles";
-import { View, Text, Button, Animated, Pressable } from "react-native";
+import { View, Text, Animated, Pressable } from "react-native";
 
 const ActiveTimer = ({ setting }) => {
   const [remainingIntervals, setRemainingIntervals] = useState(
@@ -38,8 +38,6 @@ const ActiveTimer = ({ setting }) => {
     };
   }, []);
 
-  // Timer indicator starts
-
   useEffect(() => {
     let intervalId;
     if (startTime) {
@@ -47,7 +45,7 @@ const ActiveTimer = ({ setting }) => {
         const currentTime = new Date().getTime();
         const elapsedTime = currentTime - startTime;
         setElapsedTime(elapsedTime);
-      }, 1000); // Update every second
+      }, 1000);
     }
 
     return () => {
@@ -73,7 +71,6 @@ const ActiveTimer = ({ setting }) => {
       .toString()
       .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   };
-  // Timer indicator ends
 
   const handleStart = () => {
     setIsRunning(true);
@@ -92,7 +89,7 @@ const ActiveTimer = ({ setting }) => {
         stopTimer();
         intervalAnimation.setValue(0);
       }
-    }, setting.intervalLength * 1000); // Convert to milliseconds
+    }, setting.intervalLength * 1000);
     setIntervalId(interval);
     progressAnimation();
   };

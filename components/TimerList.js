@@ -21,15 +21,13 @@ const TimerList = ({ settings, setSettings, onDelete, onStart }) => {
   }, [newIntervalLengthMins, newIntervalLengthSecs]);
 
   const handleSaveNewSetting = () => {
-    // Validation and creation of new setting object
     const newSetting = {
       id: Math.random().toString(36).substring(2, 15), // Generate unique ID
       numberIntervals: newNumberIntervals,
       intervalLength: newIntervalLength,
       name: newName,
     };
-    setSettings([...settings, newSetting]); // Update settings in App.js
-    // Persist settings to AsyncStorage
+    setSettings([...settings, newSetting]);
     setIsAddingNewSetting(false);
     setNewName("");
   };

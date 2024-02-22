@@ -51,7 +51,6 @@ const styles = StyleSheet.create({
     fontSize: 30,
     marginBottom: 20,
   },
-
   timersContainer: {
     backgroundColor: "#335",
     borderRadius: 30,
@@ -75,7 +74,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     alignItems: "center",
   },
-
   createTimer: {
     marginBottom: 20,
     width: "100%",
@@ -173,7 +171,6 @@ const styles = StyleSheet.create({
     borderLeftColor: "#0000FF",
     borderLeftWidth: 2,
   },
-
   intervalBG: {
     backgroundColor: "#bbbbff",
     padding: 0,
@@ -183,7 +180,6 @@ const styles = StyleSheet.create({
     height: 20,
     backgroundColor: "#5555ff",
   },
-
   intervalCompleted: {
     backgroundColor: "#00ff00",
   },
