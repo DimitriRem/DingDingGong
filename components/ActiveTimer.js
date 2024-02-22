@@ -123,13 +123,12 @@ const ActiveTimer = ({ setting }) => {
       toValue: 100,
       duration: setting.intervalLength * 1000 * setting.numberIntervals,
       easing: linearEasing,
-      useNativeDriver: true,
+      useNativeDriver: false,
     }).start();
   };
 
   return (
     <View style={styles.activeContainer}>
-      <Text style={styles.subHead}>Active Timer</Text>
       <Text style={styles.settingName}>
         {setting.name}: {setting.numberIntervals} x {setting.intervalLength}{" "}
         seconds
@@ -137,7 +136,13 @@ const ActiveTimer = ({ setting }) => {
       <View id="progressBar" style={styles.progressBar}>
         <View style={styles.intervalScale}>
           {Array.from({ length: setting.numberIntervals }).map((_, index) => (
-            <View key={index} style={styles.intervalScaleItem}></View>
+            <View
+              key={index}
+              style={[
+                styles.intervalScaleItem,
+                index === 0 && styles.firstIntervalScaleItem,
+              ]}
+            ></View>
           ))}
         </View>
         <View style={styles.intervalBG}>

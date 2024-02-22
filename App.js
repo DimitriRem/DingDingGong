@@ -49,9 +49,9 @@ const App = () => {
   return (
     <KeyboardAvoidingView
       style={{
-        backgroundColor: "#ccc",
+        backgroundColor: "#335",
         flex: 1,
-        justifyContent: "center",
+        justifyContent: "flex-start",
         alignItems: "center",
       }}
     >

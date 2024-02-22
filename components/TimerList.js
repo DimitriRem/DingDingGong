@@ -41,7 +41,7 @@ const TimerList = ({ settings, setSettings, onDelete, onStart }) => {
 
   return (
     <View style={styles.timersContainer}>
-      <Text style={styles.subHead}>Saved Timers</Text>
+      <Text style={{ color: "#fff", ...styles.subHead }}>Saved Timers</Text>
       <FlatList
         style={styles.flatList}
         data={settings}
@@ -58,7 +58,7 @@ const TimerList = ({ settings, setSettings, onDelete, onStart }) => {
               title="Start"
               onPress={() => onStart(item)}
             >
-              <Text style={styles.buttonText}>Start</Text>
+              <Text style={styles.buttonText}>Select</Text>
             </Pressable>
             <Pressable
               style={styles.cancelButton}
@@ -114,7 +114,7 @@ const TimerList = ({ settings, setSettings, onDelete, onStart }) => {
                   onChangeText={setNewIntervalLengthMins}
                   placeholder="minutes"
                 />
-                <Text>mins </Text>
+                <Text>m </Text>
                 <TextInput
                   style={styles.textInput}
                   inputMode="numeric"
@@ -122,7 +122,7 @@ const TimerList = ({ settings, setSettings, onDelete, onStart }) => {
                   onChangeText={setNewIntervalLengthSecs}
                   placeholder="seconds"
                 />
-                <Text>secs </Text>
+                <Text>s</Text>
               </View>
             </View>
             <View style={styles.fieldRow}>
@@ -146,10 +146,10 @@ const TimerList = ({ settings, setSettings, onDelete, onStart }) => {
       )}
       <Pressable
         title="Add New"
-        style={styles.actionButton}
+        style={styles.addNewButton}
         onPress={handleAddNewSetting}
       >
-        <Text style={styles.buttonText}>Add New</Text>
+        <Text style={styles.buttonText}>+</Text>
       </Pressable>
     </View>
   );
