@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Audio } from "expo-av";
 import styles from "../styles";
 import { View, Text, Animated, Pressable } from "react-native";
+import { activateKeepAwakeAsync, deactivateKeepAwake } from "expo-keep-awake";
 
 const ActiveTimer = ({ setting }) => {
   const [remainingIntervals, setRemainingIntervals] = useState(
@@ -55,11 +56,13 @@ const ActiveTimer = ({ setting }) => {
 
   const startTimer = () => {
     setStartTime(new Date().getTime());
+    activateKeepAwakeAsync();
   };
 
   const stopTimer = () => {
     setStartTime(null);
     setElapsedTime(0);
+    deactivateKeepAwake();
   };
 
   const formatTime = (time) => {

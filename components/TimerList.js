@@ -2,7 +2,13 @@ import React, { useState, useEffect } from "react";
 import styles from "../styles";
 import { View, Text, TextInput, FlatList, Pressable } from "react-native";
 
-const TimerList = ({ settings, setSettings, onDelete, onStart }) => {
+const TimerList = ({
+  settings,
+  setSettings,
+  onDelete,
+  onStart,
+  setActiveSetting,
+}) => {
   const [isAddingNewSetting, setIsAddingNewSetting] = useState(false);
   const [newNumberIntervals, setNewNumberIntervals] = useState(1);
   const [newIntervalLengthMins, setNewIntervalLengthMins] = useState(0);
@@ -11,6 +17,7 @@ const TimerList = ({ settings, setSettings, onDelete, onStart }) => {
   const [newName, setNewName] = useState("");
 
   const handleAddNewSetting = () => {
+    setActiveSetting(null);
     setIsAddingNewSetting(true);
   };
 
@@ -39,7 +46,7 @@ const TimerList = ({ settings, setSettings, onDelete, onStart }) => {
 
   return (
     <View style={styles.timersContainer}>
-      <Text style={{ color: "#fff", ...styles.subHead }}>Saved Timers</Text>
+      <Text style={styles.subHead}>Saved Timers</Text>
       <FlatList
         style={styles.flatList}
         data={settings}
@@ -47,7 +54,7 @@ const TimerList = ({ settings, setSettings, onDelete, onStart }) => {
           <View style={styles.listItem}>
             <View style={styles.listText}>
               <Text style={styles.settingName}>{item.name} </Text>
-              <Text>
+              <Text style={styles.listDescription}>
                 {item.numberIntervals} x {item.intervalLength} seconds
               </Text>
             </View>
@@ -75,7 +82,7 @@ const TimerList = ({ settings, setSettings, onDelete, onStart }) => {
 
             <View style={styles.fieldRow}>
               <View style={styles.fieldRowLeft}>
-                <Text>Name: </Text>
+                <Text style={styles.fieldText}>Name: </Text>
               </View>
               <View style={styles.fieldRowRight}>
                 <TextInput
@@ -88,7 +95,7 @@ const TimerList = ({ settings, setSettings, onDelete, onStart }) => {
             </View>
             <View style={styles.fieldRow}>
               <View style={styles.fieldRowLeft}>
-                <Text>Number of intervals: </Text>
+                <Text style={styles.fieldText}>Number of intervals: </Text>
               </View>
               <View style={styles.fieldRowRight}>
                 <TextInput
@@ -102,7 +109,7 @@ const TimerList = ({ settings, setSettings, onDelete, onStart }) => {
             </View>
             <View style={styles.fieldRow}>
               <View style={styles.fieldRowLeft}>
-                <Text>Interval Duration: </Text>
+                <Text style={styles.fieldText}>Interval Duration: </Text>
               </View>
               <View style={styles.fieldRowRight}>
                 <TextInput
@@ -112,7 +119,7 @@ const TimerList = ({ settings, setSettings, onDelete, onStart }) => {
                   onChangeText={setNewIntervalLengthMins}
                   placeholder="minutes"
                 />
-                <Text>m </Text>
+                <Text style={styles.fieldText}>m </Text>
                 <TextInput
                   style={styles.textInput}
                   inputMode="numeric"
@@ -120,7 +127,7 @@ const TimerList = ({ settings, setSettings, onDelete, onStart }) => {
                   onChangeText={setNewIntervalLengthSecs}
                   placeholder="seconds"
                 />
-                <Text>s</Text>
+                <Text style={styles.fieldText}>s</Text>
               </View>
             </View>
             <View style={styles.fieldRow}>

@@ -3,13 +3,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { KeyboardAvoidingView } from "react-native";
 import TimerList from "./components/TimerList";
 import ActiveTimer from "./components/ActiveTimer";
-
 const STORAGE_KEY = "@DingDingGong:settings";
 
 const App = () => {
   const [settings, setSettings] = useState([]);
   const [activeSetting, setActiveSetting] = useState(null);
-
   useEffect(() => {
     const loadSettings = async () => {
       try {
@@ -48,7 +46,7 @@ const App = () => {
   return (
     <KeyboardAvoidingView
       style={{
-        backgroundColor: "#335",
+        backgroundColor: "#121",
         flex: 1,
         justifyContent: "flex-start",
         alignItems: "center",
@@ -59,6 +57,7 @@ const App = () => {
         setSettings={setSettings}
         onDelete={handleDeleteSetting}
         onStart={handleStartSetting}
+        setActiveSetting={setActiveSetting}
       />
       {activeSetting && <ActiveTimer setting={activeSetting} />}
     </KeyboardAvoidingView>
